@@ -35,7 +35,6 @@ const submit = async () => {
             class="form-control"
             id="name"
             placeholder="이름"
-            `
             v-model="state.form.name"
           />
           <label for="name">이름</label>

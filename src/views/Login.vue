@@ -31,9 +31,9 @@ const submit = async () => {
 <template>
   <div class="login">
     <div class="container">
-      <form class="py-5 d-flex flex-column gap-3" @submit.prevent="submit">
+      <form class="py-5" @submit.prevent="submit">
         <h1 class="h5 mb-3">로그인</h1>
-        <div class="form-floating">
+        <div class="form-floating mb-3">
           <input
             type="email"
             class="form-control"
@@ -44,7 +44,7 @@ const submit = async () => {
           <label for="loginId">이메일</label>
         </div>
 
-        <div class="form-floating">
+        <div class="form-floating mb-3">
           <input
             type="password"
             class="form-control"
@@ -62,4 +62,8 @@ const submit = async () => {
   </div>
 </template>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.login > .container {
+  max-width: 576px;
+}
+</style>
