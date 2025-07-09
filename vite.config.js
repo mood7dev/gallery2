@@ -9,6 +9,10 @@ export default defineConfig({
   //프록시설정
   server: {
     proxy: {
+      "/pic": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+      },
       "/api/v1": {
         target: "http://localhost:8080",
         changeOrigin: true,
