@@ -1,6 +1,7 @@
 <script setup>
+import { computed } from "vue";
 import { onMounted, reactive } from "vue";
-import { getItems, removeItem } from "@/services/cartService";
+import { getItems, removeItem, removeAll } from "@/services/cartService";
 
 //반응형 상태
 const state = reactive({
@@ -15,21 +16,40 @@ const load = async () => {
   }
 };
 
+//장바구니 상품 삭제
+const remove = async (cartId) => {
+  const res = await removeItem(cartId);
+
+  if (res === undefined || res.status !== 200) {
+    return;
+  }
+  window.alert("선택하신 장바구니의 상품을 삭제했습니다.");
+  load();
+};
+
+const clear = async () => {
+  const res = await removeAll();
+  if (res === undefined || res.status !== 200) {
+    return;
+  }
+  state.items = [];
+};
+
 onMounted(async () => {
   load();
 });
 
-//장바구니 상품 삭제
-const remove = async (itemId) => {
-  const res = await removeItem(itemId);
-
-  if (res.status === 200)
-    window.alert("선택하신 장바구니의 상품을 삭제했습니다.");
-  await load();
-};
+//합계
+const totalPrice = computed(() => {
+  return state.items.reduce((sum, item) => {
+    const discounted = item.price - (item.price * item.discountPer) / 100;
+    return sum + discounted;
+  }, 0);
+});
 </script>
 
 <template>
+  <h1 class="cart-title">Shopping Cart</h1>
   <div class="cart">
     <div class="container">
       <template v-if="state.items.length">
@@ -50,9 +70,24 @@ const remove = async (itemId) => {
             >
           </li>
         </ul>
-        <div class="act">
-          <router-link to="/order" class="btn btn-primary"
-            >주문하기</router-link
+        <!-- 합계 표시 -->
+        <div class="summary text-end my-3 pe-3">
+          <div class="item-count">
+            선택한 상품 <strong>{{ state.items.length }}</strong
+            >개
+          </div>
+          <div class="total-price">
+            총 합계: <strong>{{ totalPrice.toLocaleString() }}</strong
+            >원
+          </div>
+        </div>
+
+        <div class="act d-flex justify-content-end">
+          <button @click="clear" class="btn btn-outline-dark custom-clear me-2">
+            장바구니 비우기
+          </button>
+          <router-link to="/order" class="btn btn-black"
+            >상품 주문하기</router-link
           >
         </div>
       </template>
@@ -62,6 +97,17 @@ const remove = async (itemId) => {
 </template>
 
 <style lang="scss" scoped>
+.cart-title {
+  font-family: "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: 30px;
+  color: #333;
+  margin-top: 2rem;
+  padding-bottom: 1.5rem;
+  letter-spacing: -2.5px;
+  text-align: center;
+}
+
 .cart {
   .items {
     list-style: none;
@@ -93,12 +139,65 @@ const remove = async (itemId) => {
     }
   }
 
-  .act .btn {
-    width: 300px;
-    display: block;
-    margin: 0 auto;
-    padding: 30px 50px;
+  .act {
+    display: flex; // flex 추가
+    justify-content: flex-end; // 오른쪽 정렬
+    gap: 10px;
+    align-items: center;
+
+    .btn {
+      width: auto;
+      padding: 10px 30px;
+      font-size: 18px;
+    }
+
+    .btn-black {
+      background-color: #000;
+      color: #fff;
+      border: 1px solid #000;
+      padding: 10px 10px;
+      font-size: 18px;
+      transition: all 0.2s;
+
+      &:hover {
+        background-color: #333;
+        border-color: #333;
+        color: #fff;
+      }
+    }
+
+    .custom-clear {
+      background-color: #fff;
+      color: #000;
+      border: 1px solid #000;
+      padding: 10px 10px;
+      font-size: 18px;
+      transition: all 0.2s;
+
+      &:hover {
+        background-color: #f8f9fa;
+        color: #000;
+      }
+    }
+  }
+
+  .total {
     font-size: 20px;
+    font-weight: bold;
+  }
+
+  .summary {
+    margin: 0 -16px;
+    padding: 20px;
+    font-size: 18px;
+    font-weight: 500;
+    text-align: right;
+    line-height: 1.6;
+
+    .item-count,
+    .total-price {
+      white-space: nowrap;
+    }
   }
 }
 </style>

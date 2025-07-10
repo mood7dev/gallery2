@@ -29,6 +29,7 @@ const put = async () => {
   }
 
   if (res.status === 409) {
+    console.log("res.status:", res.status);
     alert("이미 장바구니에 있는 상품입니다.");
     return;
   }
@@ -44,6 +45,7 @@ const put = async () => {
   }
 
   if (res.status !== 200) {
+    console.log("res.status: ", res.status);
     alert("장바구니 요청 실패");
     return;
   }
@@ -56,6 +58,14 @@ const put = async () => {
     window.location.href = "/cart";
   }
 };
+
+const buy = () => {
+  window.location.href = "/orders";
+};
+
+const computedDiscountRate = computed(() => {
+  return String(props.item.discountPer ?? 0);
+});
 </script>
 
 <template>
@@ -72,25 +82,41 @@ const put = async () => {
       <p class="card-text">
         <!-- 상품 이름 -->
         <span class="me-2">{{ props.item.name }}</span>
-        <!-- 상품 할인율 -->
-        <span class="discount badge bg-danger"
-          >{{ props.item.discountPer }}%</span
-        >
       </p>
-      <div class="d-flex justify-content-between align-items-center">
-        <button class="btn btn-primary btn-sm" @click="put()">
-          장바구니 담기
-        </button>
-        <!-- 상품 정가(숫자 데이터에 3자리마다 쉼표 표디) -->
+
+      <div class="price-info">
+        <!-- 상품 할인율 -->
+        <small class="discount-rate text-danger me-2"
+          >{{ computedDiscountRate }}%</small
+        >
+        <!-- 상품 할인가 -->
+        <small class="real text me-2">{{ computedItemDiscountPrice }}</small>
+
+        <!-- 상품 정가(숫자 데이터에 3자리마다 쉼표 표시) -->
         <small class="price text-muted"
           >{{ props.item.price.toLocaleString() }}원</small
         >
-        <!-- 상품 할인가 -->
-        <small class="real text-danger">{{ computedItemDiscountPrice }}</small>
+      </div>
+
+      <div class="d-flex justify-content-end align-items-center mt-3">
+        <button class="btn btn-secondary btn-sm me-2 ms-2" @click="put()">
+          장바구니
+        </button>
+        <button class="btn btn-naver-green btn-sm me-1" @click="buy()">
+          구매하기
+        </button>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.price-info {
+  display: flex;
+  gap: 8px; /* 각 항목 사이에 간격 추가 */
+  align-items: baseline;
+}
+</style>
 
 <style lang="scss" scoped>
 .card {
@@ -104,6 +130,35 @@ const put = async () => {
 
   .card-body .price {
     text-decoration: line-through;
+  }
+
+  .btn-naver-green {
+    background-color: #03c75a;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+
+    &:hover {
+      background-color: #029746;
+    }
+  }
+  .discount-rate.text-danger {
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 20px;
+    color: #000;
+    font-weight: bold;
+  }
+
+  .card-text > .me-2 {
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 16px;
+  }
+
+  .real.text {
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 20px;
+    color: #000;
+    font-weight: bold;
   }
 }
 </style>

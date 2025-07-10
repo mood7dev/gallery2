@@ -24,7 +24,7 @@
   padding: 30px 0;
   font-size: 14px;
   color: #fff;
-  margin-top: 25px;
+  margin-top: 50px;
 
   .container {
     max-width: 1200px;
