@@ -42,18 +42,19 @@ const submit = async () => {
   state.form.itemIds = state.items.map((item) => item.itemId);
   const res = await addOrder(state.form);
 
-  if (res.status === 200) {
-    const messages = ["주문이 완료되었습니다."];
-
-    if (state.form.payment === "bank") {
-      const price = computedTotalPrice.value.toLocaleString();
-      messages.push(
-        `한국은행 123-45678-777 계좌로 ${price}원을 입금해주시기 바랍니다.`
-      );
-    }
-    window.alert(messages.join("\n"));
-    await router.push("/");
+  if (res === undefined || res.status !== 200) {
+    alert("에러 발생");
+    return;
   }
+  const messages = ["주문이 완료되었습니다."];
+  if (state.form.payment === "bank") {
+    const price = computedTotalPrice.value.toLocaleString();
+    messages.push(
+      `한국은행 123-45678-777 계좌로 ${price}원을 입금해주시기 바랍니다.`
+    );
+  }
+  window.alert(messages.join("\n"));
+  await router.push("/");
 };
 </script>
 

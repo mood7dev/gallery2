@@ -30,6 +30,7 @@ const remove = async (cartId) => {
 const clear = async () => {
   const res = await removeAll();
   if (res === undefined || res.status !== 200) {
+    alert("오류발생");
     return;
   }
   state.items = [];
@@ -120,8 +121,8 @@ const totalPrice = computed(() => {
       margin-bottom: 25px;
     }
     img {
-      width: 150px;
-      height: 150px;
+      width: 200px;
+      height: 170px;
     }
 
     .name {

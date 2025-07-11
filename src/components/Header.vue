@@ -26,7 +26,7 @@ const logoutAccount = async () => {
     <div class="navbar navbar-dark bg-dark text-white shadow-sm">
       <div class="container">
         <router-link to="/" class="navbar-brand">
-          <strong>Gallery</strong>
+          <strong>Parfum de Rêve</strong>
         </router-link>
         <div class="menus d-flex gap-3">
           <template v-if="!account.state.loggedIn">

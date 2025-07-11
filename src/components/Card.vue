@@ -60,7 +60,7 @@ const put = async () => {
 };
 
 const buy = () => {
-  window.location.href = "/orders";
+  window.location.href = "/order";
 };
 
 const computedDiscountRate = computed(() => {
@@ -79,86 +79,147 @@ const computedDiscountRate = computed(() => {
       :aria-label="`상품사진(${props.item.name})`"
     ></span>
     <div class="card-body">
-      <p class="card-text">
-        <!-- 상품 이름 -->
+      <div class="card-text">
         <span class="me-2">{{ props.item.name }}</span>
-      </p>
-
-      <div class="price-info">
-        <!-- 상품 할인율 -->
-        <small class="discount-rate text-danger me-2"
-          >{{ computedDiscountRate }}%</small
-        >
-        <!-- 상품 할인가 -->
-        <small class="real text me-2">{{ computedItemDiscountPrice }}</small>
-
-        <!-- 상품 정가(숫자 데이터에 3자리마다 쉼표 표시) -->
-        <small class="price text-muted"
-          >{{ props.item.price.toLocaleString() }}원</small
-        >
       </div>
 
-      <div class="d-flex justify-content-end align-items-center mt-3">
-        <button class="btn btn-secondary btn-sm me-2 ms-2" @click="put()">
-          장바구니
-        </button>
-        <button class="btn btn-naver-green btn-sm me-1" @click="buy()">
-          구매하기
+      <div class="price-info">
+        <div class="price-left">
+          <!-- 상품 할인가 -->
+          <div class="DiscountedPrice">
+            <small class="real text">{{ computedItemDiscountPrice }}</small>
+          </div>
+          <!-- 상품 정가 -->
+          <div class="OriginalPrice">
+            <small class="price text-muted"
+              >{{ props.item.price.toLocaleString() }}원</small
+            >
+          </div>
+        </div>
+        <!-- 상품 할인율 -->
+        <div class="DiscountRate">
+          <small class="discount-rate text-danger"
+            >{{ computedDiscountRate }}%</small
+          >
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-center align-items-center mt-3">
+        <button class="btn btn-black btn-sm" @click="put()">장바구니</button>
+        <button class="btn btn-naver-green btn-sm" @click="buy()">
+          바로구매
         </button>
       </div>
     </div>
   </div>
 </template>
 
-<style scoped>
-.price-info {
-  display: flex;
-  gap: 8px; /* 각 항목 사이에 간격 추가 */
-  align-items: baseline;
-}
-</style>
-
 <style lang="scss" scoped>
+/* 카드 컴포넌트 전체에 한글 폰트 적용 */
 .card {
+  font-family: "Noto Sans KR", sans-serif;
+
+  /* 상품 이미지 스타일 */
   .img {
     display: inline-block;
     width: 100%;
-    height: 250px;
+    height: 280px;
     background-size: cover;
     background-position: center;
   }
 
+  /* 상품 정가 텍스트에 취소선 적용 */
   .card-body .price {
     text-decoration: line-through;
   }
 
-  .btn-naver-green {
-    background-color: #03c75a;
+  /* 가격 영역 전체 */
+  .price-info {
+    display: flex;
+    justify-content: space-between; /* 좌측은 가격들, 우측은 할인율 배치 */
+    align-items: center;
+  }
+
+  /* 상품 할인가 */
+  .DiscountedPrice {
+    font-weight: 700;
+    color: #000;
+    font-size: 27px;
+    margin-left: 8px;
+  }
+
+  /* 상품 정가 및 할인율 묶음 컨테이너: 정가와 할인율 간격 조절 */
+  .OriginalPrice {
+    display: flex;
+    align-items: center;
+    gap: 6px; /* 정가와 할인율 사이 간격 */
+    color: #adb5bd;
+  }
+
+  /* 정가 텍스트에 취소선 표시 */
+  .OriginalPrice .price {
+    text-decoration: line-through;
+  }
+
+  /* 정가 왼쪽 정렬 */
+  .price-left {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  /* 할인율 */
+  .DiscountRate .discount-rate {
+    font-weight: 700;
+    color: #dc3545;
+    margin-left: -35px;
+  }
+
+  /* 할인율 강조 텍스트 */
+  .discount-rate.text-danger {
+    font-size: 30px;
+    font-weight: bold;
+  }
+
+  /* 검정색 버튼 스타일 */
+  .btn-black {
+    background-color: #000;
     color: #fff;
     font-size: 16px;
     border: none;
+    border-radius: 0 !important;
+    padding: 13px 67px;
+    min-width: 120px;
+    font-weight: bold;
 
     &:hover {
-      background-color: #029746;
+      background-color: #333;
+      color: #fff;
+      border-color: #333;
     }
   }
-  .discount-rate.text-danger {
-    font-family: "Noto Sans KR", sans-serif;
-    font-size: 20px;
-    color: #000;
-    font-weight: bold;
-  }
 
-  .card-text > .me-2 {
-    font-family: "Noto Sans KR", sans-serif;
+  /* 네이버 그린 버튼 스타일 */
+  .btn-naver-green {
+    background-color: #deff2c;
+    color: #000;
     font-size: 16px;
+    border: none;
+    border-radius: 0 !important;
+    padding: 13px 67px;
+    min-width: 120px;
+    font-weight: bold;
+
+    &:hover {
+      background-color: #a2e534;
+    }
   }
 
-  .real.text {
-    font-family: "Noto Sans KR", sans-serif;
-    font-size: 20px;
-    color: #000;
-    font-weight: bold;
+  /* 상품 이름 텍스트 스타일 */
+  .card-text > .me-2 {
+    font-size: 17px;
+    font-weight: 500;
+    color: #adb5bd;
   }
 }
 </style>
